@@ -27,27 +27,30 @@ import matplotlib.colors
 ## User inputs
 
 # location for AAOutputFile1, Test18_OF2, and AA_ObserverLocations files
-input_dir = r"C:\\Users\mphillip\Documents\openfast\Poster Images-Data"
-loc_dir = r"C:\openfast-noise-3\noite-test\5MW_Baseline"
+input_dir = r"C:\\openfast-matt\openfast-noise-test\openfast-noise-test\_outputs-OF2"
+loc_dir = r"C:\openfast-matt\openfast-noise-test\openfast-noise-test\5MW_Baseline"
 
 # desired location for processed results
-output_dir = "..\\openfast\\Poster Images-Data\\New model"
+output_dir = "..\\openfast\\Paper-images"
 
 # appended name for AAOutputFile1: (i.e. yaw10deg_AAOutputFile1.out => outputname = "yaw10deg_". Leave outputname = "" if no modification
-outputname = "6mps-"
+outputname = ""
 AAname = outputname + "AAOutputFile1.out"
 OF2name = outputname + "Test18_OF2.out"
 
 # location file name
-locname = "AA_ObserverLocations_grid.dat"
+locname = "AA_ObserverLocations_grid_500m.dat"
 
-# save plot and/or data?
-save_fig = True
-save_data = True
+# number of revolutions (n) to calculate OASPL
+n = 1
+
+# save plot and/or data to output directory?
+save_fig = False
+save_data = False
 
 #########################################################################################################################################
 
-# produces full path
+# produces full file paths
 AAfilename = input_dir + '\\' + AAname
 OF2filename = input_dir + '\\' + OF2name
 locfilename = loc_dir + '\\' + locname
@@ -62,11 +65,14 @@ location = pd.read_csv(locfilename,delimiter='\s+',skiprows=[0],names=['x','y','
 num_obs = AA_1.shape[1]-1
 
 # calculate sample time for n revolutions
-n = 1
 rpm = OF2[["RotSpeed_[rpm]"]].mean()[0]
 time_revs = n*60/rpm
 tot_time = AA_1["Time_[s]"].max()
-sample_time = tot_time - time_revs
+if time_revs < tot_time:
+    sample_time = tot_time - time_revs
+else:
+    print("Error: Time for number of revolutions exceeds simulation time. Reduce n.")
+    raise SystemExit('')
 
 # slice AA dataframe for t > sample_time
 AA_1 = AA_1[AA_1["Time_[s]"] > sample_time]
@@ -79,7 +85,11 @@ AA_1 = 10**(AA_1 / 10)
 AA_1 = AA_1.mean()
 
 # conver back from P to SPL
-AA_1 = 10*np.log10(AA_1)
+if any(AA_1[i] == 0 for i in range(0,AA_1.size)):
+    print('Error: Log of zero encountered.')
+    raise SystemExit('')
+else:
+    AA_1 = 10*np.log10(AA_1)
 
 # merge location info with SPL info
 AA_1=AA_1.reset_index()
@@ -88,24 +98,27 @@ AA_1=pd.merge(location,AA_1,left_index=True,right_index=True)
 AA_1=AA_1.rename(index=str,columns={0:"SPL"})
 
 # contour plot of SPL for each location
-x=AA_1['x'];
-y=AA_1['y'];
-z=AA_1['SPL'];
+if num_obs < 3:
+    print("Error: Need at least 3 observers to generate contour.")
+else:
+    x=AA_1['x'];
+    y=AA_1['y'];
+    z=AA_1['SPL'];
 
-fig1,ax1=plt.subplots()
-ax1.set_aspect('equal')
-ax1.set_title('SPL Contour at 2m Height')
-ax1.set_xlabel('x [m]')
-ax1.set_ylabel('y [m]')
-tcf=ax1.tricontourf(x,y,z,)
-fig1.colorbar(tcf,orientation="horizontal")
-ax1.tricontour(x,y,z,colors='None')
-if save_fig = True:
-    plt.savefig('{}-contour.png'.format(outputfilename))
+    fig1,ax1=plt.subplots()
+    ax1.set_aspect('equal')
+    ax1.set_title('SPL Contour at 2m Height')
+    ax1.set_xlabel('x [m]')
+    ax1.set_ylabel('y [m]')
+    tcf=ax1.tricontourf(x,y,z,)
+    fig1.colorbar(tcf,orientation="horizontal")
+    ax1.tricontour(x,y,z,colors='None')
+    if save_fig == True:
+        plt.savefig('{}-contour.png'.format(outputfilename))
 
-plt.show()
+    plt.show()
 
 # export to csv
-if save_data = True:
+if save_data == True:
     AA_1.to_csv(r'{}-data.csv'.format(output_dir))
 

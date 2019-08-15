@@ -20,7 +20,7 @@ AAOutputFile1_post.py
 	* Contour plot of OASPL (requires at least 3 observers)
 		
 	Known Problems:
-	* Many...
+	* 
 
 ######################################################################################################
 	
@@ -36,11 +36,10 @@ AAOutputFile2_post.py
 	
 	Outputs:
 	* CSV file for Observer, Frequency, and SPL
-	* Line plot of frequency-dependent SPL
+	* Line plot of SPL spectra for each observer
 		
 	Known Problems:
-	* Currently only supports one observer location
-	* Many more...
+	* Only supports up to 6 observers for line plot.
 
 ######################################################################################################
 	
@@ -57,11 +56,10 @@ AAOutputFile3_post.py
 	
 	Outputs:
 	* CSV file for Observer, Mechanism, Frequency, and SPL
-	* Line plot of mechanism-dependent and frequency-dependent SPL
+	* Line plot of mechanism-dependent SPL spectra for each observer
 		
 	Known Problems:
-	* Currently only supports one observer location
-	* Many more...
+	* Only supports up to 6 observers for line plot if not creating separate subplots for each observer
 
 
 
