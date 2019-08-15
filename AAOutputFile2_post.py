@@ -42,7 +42,7 @@ OF2name = outputname + "Test18_OF2.out"
 n = 1
 
 # save plot and/or data?
-save_fig = True
+save_fig = False
 save_data = False
 
 #########################################################################################################################################

@@ -42,7 +42,7 @@ OF2name = outputname + "Test18_OF2.out"
 n = 1
 
 # save plot and/or data?
-plt_grid = False            # creates subplot for each observer if True
+plt_grid = True            # creates subplot for each observer if True
 save_fig = False
 save_data = False
 
