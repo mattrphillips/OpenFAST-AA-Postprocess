@@ -30,7 +30,7 @@ input_dir = r"C:\\openfast-matt\openfast-noise-test\openfast-noise-test\_outputs
 loc_dir = r"C:\openfast-matt\openfast-noise-test\openfast-noise-test\5MW_Baseline"
 
 # desired location for processed results
-output_dir = "..\\openfast\\Paper-images"
+output_dir = ".."
 
 # appended name for AAOutputFile1: (i.e. yaw10deg_AAOutputFile1.out => outputname = "yaw10deg_". Leave outputname = "" if no modification
 outputname = ""
@@ -45,7 +45,7 @@ n = 1
 
 # save plot and/or data to output directory?
 save_fig = False
-save_data = False
+save_data = True
 
 #########################################################################################################################################
 
@@ -119,5 +119,5 @@ else:
 
 # export to csv
 if save_data == True:
-    AA_1.to_csv(r'{}-data.csv'.format(output_dir))
+    AA_1.to_csv(r'{}-data.csv'.format(outputfilename))
 
